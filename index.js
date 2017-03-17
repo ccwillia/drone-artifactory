@@ -55,6 +55,9 @@ var do_upload = function (params) {
   // Default repo_key to 'libs-snapshot-local' or 'libs-release-local'
   if (!vargs.repo_key) { project.version.toLowerCase().indexOf('snapshot') > -1 ? vargs.repo_key = 'libs-snapshot-local' : vargs.repo_key = 'libs-release-local'; }
 
+  // Change repo_key from release to snapshot if version contains snapshot
+  if (vargs.repo_key.toLowerCase().indexOf('release') > -1 && project.version.toLowerCase().indexOf('snapshot') > -1) { vargs.repo_key = vargs.repo_key.replace("release", "snapshot"); }
+
   return Promise.all(
     expands_files(workspace.path, vargs.files)
     .map((file) => { return publish_file(artifactory, vargs.repo_key, project, file, vargs.force_upload); })
